@@ -1,12 +1,16 @@
 package main
 
 import (
-	"backend/app"
+	"backend/src/config"
+	"backend/src/routes"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	engine := gin.New()
-	app.MapRoutes(engine)
-	engine.Run(":8080")
+	db := config.NewDBConnection()
+	routes.AppRouter(engine, db)
+
+	engine.Run(":8000")
 }
