@@ -1,11 +1,6 @@
 package model
 
-import (
-	"gorm.io/gorm"
-)
-
 type Course struct {
-	gorm.Model
 	Id                uint
 	CourseName        string  `gorm:"course_name"`
 	CourseDescription string  `gorm:"description"`
