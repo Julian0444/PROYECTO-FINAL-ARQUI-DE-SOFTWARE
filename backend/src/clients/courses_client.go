@@ -20,9 +20,13 @@ func (c *CourseClient) GetCourseById(id int) model.Course {
 	return course
 }
 
-func (c *CourseClient) GetAllCourses() []model.Course {
+func (c *CourseClient) GetAllCourses(terms string) []model.Course {
 	var courses []model.Course
-	c.db.Find(&courses)
+	if terms != "" {
+		c.db.Where("course_name LIKE ?", "%"+terms+"%").Find(&courses)
+	} else {
+		c.db.Find(&courses)
+	}
 	return courses
 
 }

@@ -45,7 +45,8 @@ func (c *CoursesControllers) GetCourseById(g *gin.Context) {
 }
 
 func (c *CoursesControllers) GetAllCourses(g *gin.Context) {
-	response := c.service.GetAllCourses()
+	terms := g.Query("search")
+	response := c.service.GetAllCourses(terms)
 
 	g.JSON(200, gin.H{
 		"Ok":      true,

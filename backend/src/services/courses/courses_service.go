@@ -12,7 +12,7 @@ type CourseService struct {
 
 type ICourseService interface {
 	GetCourseById(id int) model.Course
-	GetAllCourses() []model.Course
+	GetAllCourses(terms string) []model.Course
 	CreateCourse(createCourseDto courses.CreateCoursesRequestDto) courses.CreateCoursesResponseDto
 	UpdateCourse(updateCourseDto courses.UpdateCoursesRequestDto) courses.UpdateCoursesResponseDto
 }
@@ -25,8 +25,8 @@ func (c *CourseService) GetCourseById(id int) model.Course {
 	return c.client.GetCourseById(id)
 }
 
-func (c *CourseService) GetAllCourses() []model.Course {
-	return c.client.GetAllCourses()
+func (c *CourseService) GetAllCourses(terms string) []model.Course {
+	return c.client.GetAllCourses(terms)
 }
 
 func (c *CourseService) CreateCourse(createCourseDto courses.CreateCoursesRequestDto) courses.CreateCoursesResponseDto {
