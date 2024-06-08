@@ -6,9 +6,22 @@
  - Añadir un formulario para que el usuario pueda registrarse
  - añadir un campo <input> por cada campo del modelo User
  - Añadir un botón de submit
-     - En el boton, añadir onSubmit que haga un POST a tu backend.
-     - Despues de hacer el POST, redirigir a la home
-2. Backend: Añadir una ruta POST /users
-    - Extraer los campos del body, y darselo al service
-    - en ele service, añadir los nuevos parametros y hacer una query insert con esos parametros.
-    - Si la query es correcta, devolver un 201
+ - En el boton, añadir onSubmit que haga un POST a tu backend.
+ - Despues de hacer el POST, redirigir a la home
+
+
+
+
+
+
+1. Correr DB. el programa "mariadb" se está ejecutando 
+2. Exportar DB en el archivo "db.sql", Importar DB en el programa "mariadb"
+
+
+
+
+
+Front:
+ 1. onChange, onSubmit - cambiar URL.
+ 2. añadir un boton para setCreatingUser(true)
+
