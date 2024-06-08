@@ -8,7 +8,8 @@ import (
 )
 
 type AuthController struct {
-	service services.IAuthService
+	service        services.IAuthService
+	failedAttempts map[string]int
 }
 
 type IAuthController interface {
@@ -18,7 +19,7 @@ type IAuthController interface {
 }
 
 func NewAuthController(service services.IAuthService) *AuthController {
-	return &AuthController{service: service}
+	return &AuthController{service: service, failedAttempts: make(map[string]int)}
 }
 
 func (a *AuthController) Register(g *gin.Context) {
@@ -38,7 +39,6 @@ func (a *AuthController) Register(g *gin.Context) {
 			"error": err.Error(),
 		})
 		return
-
 	}
 	g.JSON(200, gin.H{
 		"Ok":      true,
@@ -57,15 +57,25 @@ func (a *AuthController) Login(g *gin.Context) {
 		return
 	}
 
+	if a.failedAttempts[loginDto.Email] >= 3 {
+		g.JSON(403, gin.H{
+			"Ok":    false,
+			"error": "Your account has been locked due to too many failed login attempts",
+		})
+		return
+	}
+
 	user, err := a.service.Login(loginDto)
 	if err != nil {
+		a.failedAttempts[loginDto.Email]++
 		g.JSON(400, gin.H{
 			"Ok":    false,
 			"error": err.Error(),
 		})
 		return
-
 	}
+
+	a.failedAttempts[loginDto.Email] = 0
 	g.JSON(200, gin.H{
 		"Ok":      true,
 		"message": "User logged in successfully",
@@ -97,3 +107,29 @@ func (a *AuthController) Refresh(g *gin.Context) {
 		"token":   newToken,
 	})
 }
+
+/*
+func (a *AuthController) RegisterUser(g *gin.Context) {
+    var registerRequest dtos.RegisterRequest
+    if err := g.ShouldBindJSON(&registerRequest); err != nil {
+        g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    createdUser, err := a.service.Register(registerRequest)
+    if err != nil {
+        g.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Generar un token de autenticación para el usuario
+    token := utils.SignDocument(createdUser.Data.Id, createdUser.Role)
+
+    g.JSON(http.StatusCreated, gin.H{
+        "Ok": true,
+        "Message": "User created successfully",
+        "Data": createdUser,
+        "Token": token, // Devolver el token de autenticación
+    })
+}
+*/

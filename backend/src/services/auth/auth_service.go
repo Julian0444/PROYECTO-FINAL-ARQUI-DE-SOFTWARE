@@ -5,6 +5,7 @@ import (
 	dtos "backend/src/domain/dtos/auth"
 	model "backend/src/models"
 	"backend/src/utils"
+	"errors"
 )
 
 type AuthService struct {
@@ -22,10 +23,9 @@ func NewAuthService(client *clients.UserClient) *AuthService {
 }
 
 func (a *AuthService) Register(registerDto dtos.RegisterRequest) (dtos.AuthResponse, error) {
-
 	checkUser := a.client.GetUserByEmail(registerDto.Email)
 	if checkUser.Id != 0 {
-		panic("User already exists")
+		return dtos.AuthResponse{}, errors.New("User already exists")
 	}
 
 	crypto := utils.NewCrypto()
@@ -41,34 +41,27 @@ func (a *AuthService) Register(registerDto dtos.RegisterRequest) (dtos.AuthRespo
 
 	user := a.client.CreateUser(newUser)
 	if user.Id == 0 {
-		panic("User not created")
+		return dtos.AuthResponse{}, errors.New("User not created")
 	}
 
 	token := utils.SignDocument(user.Id, user.Role)
-	userData := model.User{
-		Id:    user.Id,
-		Name:  user.Name,
-		Email: user.Email,
-		Role:  user.Role,
-	}
 	return dtos.AuthResponse{
 		Ok:      true,
 		Message: "User created",
-		Data:    userData,
+		Data:    user,
 		Token:   token,
 	}, nil
-
 }
 
 func (a *AuthService) Login(loginDto dtos.LoginRequest) (dtos.AuthResponse, error) {
 	user := a.client.GetUserByEmail(loginDto.Email)
 	if user.Id == 0 {
-		panic("User not found")
+		return dtos.AuthResponse{}, errors.New("User not found")
 	}
 
 	crypto := utils.NewCrypto()
 	if !crypto.ComparePassword(user.Password, loginDto.Password) {
-		panic("Invalid password")
+		return dtos.AuthResponse{}, errors.New("Invalid password")
 	}
 
 	token := utils.SignDocument(user.Id, user.Role)
@@ -89,17 +82,17 @@ func (a *AuthService) Login(loginDto dtos.LoginRequest) (dtos.AuthResponse, erro
 func (a *AuthService) Refresh(token string) (dtos.AuthResponse, error) {
 	claims, err := utils.VerifyToken(token)
 	if err != nil {
-		panic("Invalid token")
+		return dtos.AuthResponse{}, errors.New("Invalid token")
 	}
 
 	userID := int(claims["id"].(float64))
 	user := a.client.GetUserById(userID)
 	if user.Id == 0 {
-		panic("User not found")
+		return dtos.AuthResponse{}, errors.New("User not found")
 	}
 
 	if user.Role != int(claims["role"].(float64)) {
-		panic("Invalid role")
+		return dtos.AuthResponse{}, errors.New("Invalid role")
 	}
 
 	newToken := utils.SignDocument(user.Id, user.Role)
