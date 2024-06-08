@@ -107,29 +107,3 @@ func (a *AuthController) Refresh(g *gin.Context) {
 		"token":   newToken,
 	})
 }
-
-/*
-func (a *AuthController) RegisterUser(g *gin.Context) {
-    var registerRequest dtos.RegisterRequest
-    if err := g.ShouldBindJSON(&registerRequest); err != nil {
-        g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-
-    createdUser, err := a.service.Register(registerRequest)
-    if err != nil {
-        g.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-
-    // Generar un token de autenticación para el usuario
-    token := utils.SignDocument(createdUser.Data.Id, createdUser.Role)
-
-    g.JSON(http.StatusCreated, gin.H{
-        "Ok": true,
-        "Message": "User created successfully",
-        "Data": createdUser,
-        "Token": token, // Devolver el token de autenticación
-    })
-}
-*/

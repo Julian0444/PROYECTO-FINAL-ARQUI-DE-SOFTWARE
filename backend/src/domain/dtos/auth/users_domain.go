@@ -18,4 +18,5 @@ type AuthResponse struct {
 	Message string     `json:"message"`
 	Data    model.User `json:"data"`
 	Token   string     `json:"token"`
+	Role    string     `json:"role"`
 }

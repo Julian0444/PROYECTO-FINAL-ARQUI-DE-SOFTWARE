@@ -4,7 +4,7 @@ import (
 	"backend/src/clients"
 	dtos "backend/src/domain/dtos/auth"
 	model "backend/src/models"
-	"backend/src/utils"
+	utils "backend/src/utils"
 	"errors"
 )
 

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const useCourses = () => {
+const useCourses = (token) => {
   const [courses, setCourses] = useState([]);
   const [searchTerms, setSearchTerms] = useState("");
   useEffect(() => {
     const targetUrl = 'http://localhost:8080/courses' + (searchTerms ? `?search=${searchTerms}` : '');
-    axios.get(targetUrl)
+    axios.get(targetUrl, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
       .then(response => {
         if (response.data.Data !== null) {
           setCourses(response.data.Data);
@@ -15,7 +19,7 @@ const useCourses = () => {
       .catch(error => {
         console.error('Error al obtener cursos:', error);
       });
-  }, [searchTerms]);
+  }, [searchTerms, token]);
 
   return [courses, searchTerms, setSearchTerms];
 }
@@ -61,10 +65,86 @@ const CourseList = ({ courses, setDetailCourse, searchTerms, setSearchTerms }) =
 }
 
 
-const CourseCatalog = () => {
-  const [courses, searchTerms, setSearchTerms] = useCourses();
+const LoginPage = () => {
+  return (
+    <div>
+      <h1>Inicio de sesion</h1>
+      <form>
+        <label>
+          Email:
+          <input type="text" name="email" />
+        </label>
+        <label>
+          Contraseña:
+          <input type="password" name="password" />
+        </label>
+        <button type="submit">Iniciar sesion</button>
+      </form>
+    </div>
+  );
+
+}
+
+
+const CreateUserPage = ({ setToken }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const targetUrl = 'http://localhost:8080/auth/register';
+    axios.post(targetUrl, {
+      name,
+      email,
+      password,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
+
+      if (response.data.data.token) {
+        setToken(response.data.data.token);
+      }
+
+    })
+
+  };
+
+  return (
+    <div>
+      <h1>Crear usuario</h1>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Nombre:
+          <input type="text" name="name" value={name} onChange={(e) => setName(e.target.value)} />
+        </label>
+        <label>
+          Email:
+          <input type="text" name="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </label>
+        <label>
+          Contraseña:
+          <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </label>
+        <button type="submit">Crear usuario</button>
+      </form>
+    </div>
+  );
+}
+
+
+const App = () => {
+  const [token, setToken] = useState(null)
+
+  const [courses, searchTerms, setSearchTerms] = useCourses(token);
 
   const [detailCourse, setDetailCourse] = useState(null);
+
+  if (token === null) {
+    return <CreateUserPage setToken={setToken} />;
+  }
 
   if (detailCourse) {
     return <CourseDetail course={detailCourse} hideDetail={() => setDetailCourse(null)} />;
@@ -74,4 +154,4 @@ const CourseCatalog = () => {
 
 };
 
-export default CourseCatalog;
+export default App;
