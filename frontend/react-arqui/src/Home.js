@@ -1,18 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
-import {Cursos, CourseDetail, CourseList} from './Cursos';
+import {useCourses, CourseDetail, CourseList} from './Cursos';
 
 const Home = () => {
     const [token, setToken] = useState(null)
   
-    const [courses, searchTerms, setSearchTerms] = Cursos(token);
+    const [courses, searchTerms, setSearchTerms] = useCourses(token);
   
     const [detailCourse, setDetailCourse] = useState(null);
-  
-    if (token === null) {
-      return <CreateUserPage setToken={setToken} />;
-    }
-  
+    
     if (detailCourse) {
       return <CourseDetail course={detailCourse} hideDetail={() => setDetailCourse(null)} />;
     }

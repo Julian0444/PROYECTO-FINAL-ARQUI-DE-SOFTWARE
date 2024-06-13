@@ -3,69 +3,65 @@ import axios from "axios";
 
 
 
-const Cursos = (token) => {
-    const [courses, setCourses] = useState([]);
-    const [searchTerms, setSearchTerms] = useState("");
-    useEffect(() => {
-      const targetUrl = 'http://localhost:8080/courses' + (searchTerms ? `?search=${searchTerms}` : '');
-      axios.get(targetUrl, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+export const useCourses = (token) => {
+  const [courses, setCourses] = useState([]);
+  const [searchTerms, setSearchTerms] = useState("");
+  useEffect(() => {
+    const targetUrl = 'http://localhost:8080/courses' + (searchTerms ? `?search=${searchTerms}` : '');
+    axios.get(targetUrl, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then(response => {
+        if (response.data.Data !== null) {
+          setCourses(response.data.Data);
+        }
       })
-        .then(response => {
-          if (response.data.Data !== null) {
-            setCourses(response.data.Data);
-          }
-        })
-        .catch(error => {
-          console.error('Error al obtener cursos:', error);
-        });
-    }, [searchTerms, token]);
-  
-    return [courses, searchTerms, setSearchTerms];
-  }
-  
-  
-  const CourseDetail = ({ course, hideDetail }) => {
-    return (
-      <div>
-        <h1>{course.CourseName}</h1>
-        <p>{course.CourseDescription}</p>
-        <p>Precio: ${course.CoursePrice}</p>
-        <p>Duracion: {course.CourseDuration} days</p>
-        <p>Fecha de inicio: {course.CourseInitDate}</p>
-        <p>Capacidad: {course.CourseCapacity}</p>
-        <img src={course.CourseImage} alt={course.CourseName} />
-        <h2>{course.CourseName}</h2>
-        <p>{course.CourseDescription}</p>
-        <button onClick={hideDetail}>Cerrar</button>
-      </div>
-    );
-  };
-  
-  const CourseList = ({ courses, setDetailCourse, searchTerms, setSearchTerms }) => {
-  
-    const handleChange = (event) => {
-      setSearchTerms(event.target.value); // Update state when input changes
-    };
-    return (
-      <div>
-        <input type="text" value={searchTerms} onChange={handleChange} />;
-        <h2>Listado de Cursos</h2>
-        <ul>
-          {courses.map(curso => (
-            <li key={curso.Id}>
-              <h3>{curso.CourseName}</h3>
-              <p>{curso.CourseDescription}</p>
-              <button onClick={() => setDetailCourse(curso)}>Ver detalle</button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
+      .catch(error => {
+        console.error('Error al obtener cursos:', error);
+      });
+  }, [searchTerms, token]);
 
-  export default Cursos,CourseDetail,CourseList;
-  export default CourseDetail;
-  export default CourseList;
+  return [courses, searchTerms, setSearchTerms];
+}
+
+
+export const CourseDetail = ({ course, hideDetail }) => {
+  return (
+    <div>
+      <h1>{course.CourseName}</h1>
+      <p>{course.CourseDescription}</p>
+      <p>Precio: ${course.CoursePrice}</p>
+      <p>Duracion: {course.CourseDuration} days</p>
+      <p>Fecha de inicio: {course.CourseInitDate}</p>
+      <p>Capacidad: {course.CourseCapacity}</p>
+      <img src={course.CourseImage} alt={course.CourseName} />
+      <h2>{course.CourseName}</h2>
+      <p>{course.CourseDescription}</p>
+      <button onClick={hideDetail}>Cerrar</button>
+    </div>
+  );
+};
+
+export const CourseList = ({ courses, setDetailCourse, searchTerms, setSearchTerms }) => {
+
+  const handleChange = (event) => {
+    setSearchTerms(event.target.value); // Update state when input changes
+  };
+  return (
+    <div>
+      <input type="text" value={searchTerms} onChange={handleChange} />;
+      <h2>Listado de Cursos</h2>
+      <ul>
+        {courses.map(curso => (
+          <li key={curso.Id}>
+            <h3>{curso.CourseName}</h3>
+            <p>{curso.CourseDescription}</p>
+            <button onClick={() => setDetailCourse(curso)}>Ver detalle</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
