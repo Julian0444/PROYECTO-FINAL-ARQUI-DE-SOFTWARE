@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import './Cursos.css';
 
 
 export const useCourses = (token) => {
@@ -34,11 +34,11 @@ export const useCourses = (token) => {
 
 export const CourseDetail = ({ course, hideDetail }) => {
   return (
-    <div>
+    <div className="course-detail container">
       <h1>{course.CourseName}</h1>
       <p>{course.CourseDescription}</p>
       <p>Precio: ${course.CoursePrice}</p>
-      <p>Duracion: {course.CourseDuration} days</p>
+      <p>Duracion: {course.CourseDuration} horas</p>
       <p>Fecha de inicio: {course.CourseInitDate}</p>
       <p>Capacidad: {course.CourseCapacity}</p>
       <img src={course.CourseImage} alt={course.CourseName} />

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
-
 import { useNavigate } from "react-router-dom";
-
+import './Login.css';
 
 const Cookie = new Cookies();
 const Login = ({ token, setToken }) => {
@@ -151,7 +150,7 @@ const Login = ({ token, setToken }) => {
             <button onClick={() => {
                 setRegister(!register);
                 console.log(Cookie.get("rol"));
-            }}> Cambiar vista </button>
+            }}> CREAR USUARIO / REGISTRATE</button>
             {register ? CreateUserPage() : LoginPage()}
         </div>
     )
