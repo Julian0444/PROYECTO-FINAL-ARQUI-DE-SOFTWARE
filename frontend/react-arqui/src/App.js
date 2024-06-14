@@ -5,11 +5,13 @@ import Home from "./Home"
 import Login from "./Login"
 
 function App(){
+  
+  const [token, setToken] = useState(null)
   return (
       <Router>
         <Routes>
-          <Route exact path = "/" element={<Home/>}/>
-          <Route path= "/login" element={<Login/>}/>
+          <Route exact path = "/" element={<Home token={token}/>}/>
+          <Route path= "/login" element={<Login token={token} setToken={setToken}/>}/>
         </Routes>
       </Router>
     );

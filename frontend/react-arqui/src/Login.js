@@ -1,15 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
 
-const Cookie = new Cookies();
-const Login = () => {
+import { useNavigate } from "react-router-dom";
 
-    const [token, setToken] = useState(null)
+
+const Cookie = new Cookies();
+const Login = ({ token, setToken }) => {
+
+    const navigate = useNavigate();
     const [register, setRegister] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(
+        () => {
+            if (token) {
+                navigate("/");
+            }
+        }, [token]
+    )
 
 
     const handleSubmitRegister = async (event) => {

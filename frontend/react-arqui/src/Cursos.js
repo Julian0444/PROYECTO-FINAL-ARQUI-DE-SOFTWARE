@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 
 export const useCourses = (token) => {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [searchTerms, setSearchTerms] = useState("");
   useEffect(() => {
@@ -19,6 +21,9 @@ export const useCourses = (token) => {
         }
       })
       .catch(error => {
+        if (error.response.status === 401) {
+          navigate("/login");
+        }
         console.error('Error al obtener cursos:', error);
       });
   }, [searchTerms, token]);

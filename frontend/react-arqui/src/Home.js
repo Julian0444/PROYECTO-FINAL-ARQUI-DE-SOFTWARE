@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from "axios";
 import {useCourses, CourseDetail, CourseList} from './Cursos';
 
-const Home = () => {
-    const [token, setToken] = useState(null)
+const Home = ({ token }) => {
   
     const [courses, searchTerms, setSearchTerms] = useCourses(token);
   
