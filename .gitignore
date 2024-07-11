@@ -1,2 +1,4 @@
 backend/gin-bin.exe
 node_modules
+.database
+pkg
