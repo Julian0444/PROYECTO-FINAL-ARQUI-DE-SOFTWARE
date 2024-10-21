@@ -28,7 +28,7 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
     ports:
-      - 3306:3306
+      - "3307:3306"  # Cambié el puerto host a 3307 para evitar conflicto con otro servicio
     volumes:
       - ./.database:/var/lib/mysql
       - ./arq-soft:/docker-entrypoint-initdb.d
